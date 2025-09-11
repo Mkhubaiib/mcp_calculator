@@ -83,3 +83,4 @@ python client_example.py
 - Add timeouts & rate limiting (future enhancement) for production.
 - Consider versioning and compatibility in `initialize` handshake.
 - Write unit tests for pure logic (calculator) and integration tests for protocol.
+
