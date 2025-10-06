@@ -75,6 +75,7 @@ def _handle_parsed_message(msg, state):
     """
     if isinstance(msg, InitializeMessage):
         state["initialized"] = True
+        logger.info(f"Client initialized: {msg.client} v{msg.version}")
         return InitializedMessage.create()
     if not state.get("initialized"):
         return ErrorMessage(error="Must initialize first")
@@ -84,19 +85,23 @@ def _handle_parsed_message(msg, state):
         return ToolsListMessage(tools=list_tools())
     if isinstance(msg, CallToolMessage):
         try:
+            logger.debug(f"Calling tool: {msg.name} with args: {msg.args}")
             result = call_tool(msg.name, msg.args)
+            logger.info(f"Tool {msg.name} executed successfully")
             return ToolResultMessage(name=msg.name, result=result)
         except ToolError as te:
-            return ErrorMessage(error=str(te))
-        except Exception:
+            logger.warning(f"Tool error in {msg.name}: {str(te)}")
+            return ErrorMessage(error=str(te), details={"tool": msg.name, "args": msg.args})
+        except Exception as e:
             logger.exception("Unhandled tool error")
-            return ErrorMessage(error="Internal error")
+            return ErrorMessage(error="Internal error", details={"tool": msg.name})
     return ErrorMessage(error="Unsupported message")
 
 @app.websocket("/mcp")
 async def mcp_socket(ws: WebSocket):
     await ws.accept()
     state = {"initialized": False}
+    logger.info("WebSocket connection accepted")
 
     async def send_obj(obj):
         await ws.send_text(json.dumps(_serialize(obj)))
@@ -104,15 +109,18 @@ async def mcp_socket(ws: WebSocket):
     try:
         while True:
             raw = await ws.receive_text()
+            logger.debug(f"Received message: {raw[:100]}...")  # Log first 100 chars to avoid sensitive data
             try:
                 data = json.loads(raw)
-            except json.JSONDecodeError:
-                await send_obj(ErrorMessage(error="Invalid JSON"))
+            except json.JSONDecodeError as e:
+                logger.warning(f"Invalid JSON received: {str(e)}")
+                await send_obj(ErrorMessage(error="Invalid JSON", details={"parse_error": str(e)}))
                 continue
             try:
                 msg = parse_message(data)
             except Exception as e:
-                await send_obj(ErrorMessage(error=str(e)))
+                logger.warning(f"Message parsing failed: {str(e)}")
+                await send_obj(ErrorMessage(error=str(e), details={"message_type": data.get("type")}))
                 continue
             reply = _handle_parsed_message(msg, state)
             await send_obj(reply)

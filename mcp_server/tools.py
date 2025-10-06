@@ -4,6 +4,9 @@ Separating logic keeps protocol handling clean and testable.
 """
 from __future__ import annotations
 from typing import Any, Dict, Callable
+import logging
+
+logger = logging.getLogger("mcp_server.tools")
 
 # Registry of tool metadata and callables
 _TOOL_REGISTRY: Dict[str, Dict[str, Any]] = {}
@@ -24,27 +27,48 @@ def tool(name: str, description: str):
 
 @tool(name="add", description="Add two numbers: a + b")
 def tool_add(args: Dict[str, Any]) -> float:
-    a = float(args.get("a"))
-    b = float(args.get("b"))
+    if "a" not in args or "b" not in args:
+        raise ToolError("Missing required arguments: 'a' and 'b' are required")
+    try:
+        a = float(args.get("a"))
+        b = float(args.get("b"))
+    except (ValueError, TypeError) as e:
+        raise ToolError(f"Invalid number format: {str(e)}")
     return a + b
 
 @tool(name="subtract", description="Subtract two numbers: a - b")
 def tool_subtract(args: Dict[str, Any]) -> float:
-    a = float(args.get("a"))
-    b = float(args.get("b"))
+    if "a" not in args or "b" not in args:
+        raise ToolError("Missing required arguments: 'a' and 'b' are required")
+    try:
+        a = float(args.get("a"))
+        b = float(args.get("b"))
+    except (ValueError, TypeError) as e:
+        raise ToolError(f"Invalid number format: {str(e)}")
     return a - b
 
 @tool(name="multiply", description="Multiply two numbers: a * b")
 def tool_multiply(args: Dict[str, Any]) -> float:
-    a = float(args.get("a"))
-    b = float(args.get("b"))
+    if "a" not in args or "b" not in args:
+        raise ToolError("Missing required arguments: 'a' and 'b' are required")
+    try:
+        a = float(args.get("a"))
+        b = float(args.get("b"))
+    except (ValueError, TypeError) as e:
+        raise ToolError(f"Invalid number format: {str(e)}")
     return a * b
 
 @tool(name="divide", description="Divide two numbers: a / b")
 def tool_divide(args: Dict[str, Any]) -> float:
-    a = float(args.get("a"))
-    b = float(args.get("b"))
+    if "a" not in args or "b" not in args:
+        raise ToolError("Missing required arguments: 'a' and 'b' are required")
+    try:
+        a = float(args.get("a"))
+        b = float(args.get("b"))
+    except (ValueError, TypeError) as e:
+        raise ToolError(f"Invalid number format: {str(e)}")
     if b == 0:
+        logger.warning(f"Division by zero attempted with a={a}")
         raise ToolError("Division by zero is not allowed")
     return a / b
 
