@@ -1,82 +1,89 @@
-# MCP Calculator Server (Python)
+# MCP Calculator Server
 
-A beginner-friendly Model Context Protocol (MCP) server that exposes a simple calculator tool (add, subtract, multiply, divide) over WebSocket using FastAPI.
-
-## What is MCP?
-Model Context Protocol (MCP) is a structured, message-based protocol that lets AI models/tools/clients exchange capabilities and context safely. A server implements tools/resources and communicates over JSON messages (often via WebSocket or stdio). A client connects, performs a handshake (`initialize`), then invokes tools (`call_tool`).
+A Model Context Protocol (MCP) server that provides calculator operations for MCP clients.
 
 ## Features
-- FastAPI + WebSocket endpoint `/mcp`.
-- Basic MCP message types: `initialize`, `ping`, `list_tools`, `call_tool`.
-- Simple calculator operations with validation.
-- Structured error responses.
-- Basic logging middleware.
 
-## Project Structure
-```
- mcp_calculator/
- ├── README.md                # Project overview & instructions
- ├── pyproject.toml           # Dependencies & packaging metadata
- ├── mcp_server/              # Source package
- │   ├── __init__.py
- │   ├── main.py              # FastAPI app + WebSocket handler
- │   ├── protocol.py          # Pydantic models for MCP messages
- │   ├── tools.py             # Calculator tool implementations
- │   └── logging_config.py    # Logging setup
- └── client_example.py        # Minimal WebSocket client example
-```
+- ✅ **Official MCP SDK** - Built with the official `mcp` Python package
+- ✅ **stdio Transport** - Standard MCP communication protocol
+- ✅ **4 Calculator Tools** - add, subtract, multiply, divide
+- ✅ **Type Safety** - Full input validation with JSON schemas
+- ✅ **Error Handling** - Graceful handling of edge cases (division by zero, invalid inputs)
+- ✅ **Well Tested** - Comprehensive test coverage with pytest
 
-## Install & Run
+## Installation
+
 ```bash
-# (Optional) create virtual env
+# Clone the repository
+git clone https://github.com/Mkhubaiib/mcp_calculator.git
+cd mcp_calculator
+
+# Create virtual environment
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# Install dependencies
-pip install -e .
-
-# Run server (reload for dev)
-uvicorn mcp_server.main:app --reload --port 8000
+# Install in development mode
+pip install -e ".[dev]"
 ```
 
-WebSocket URL: `ws://localhost:8000/mcp`
+## Usage
 
-## Test
+### Running the Server
+
+Run the MCP server using either method:
+
 ```bash
-pytest -q
+# Using the entry point command
+mcp-calculator
+
+# Or using Python module syntax
+python -m mcp_server.server
 ```
 
-## Try Client Example
-In another terminal after server is running:
+The server communicates via stdio (stdin/stdout) using the MCP protocol.
+
+## Available Tools
+
+| Tool | Description | Parameters |
+|------|-------------|------------|
+| `add` | Add two numbers | `a` (number), `b` (number) |
+| `subtract` | Subtract b from a | `a` (number), `b` (number) |
+| `multiply` | Multiply two numbers | `a` (number), `b` (number) |
+| `divide` | Divide a by b | `a` (number), `b` (number, cannot be zero) |
+
+## Development
+
+### Running Tests
+
 ```bash
-python client_example.py
+pip install -e ".[dev]"
+pytest
 ```
 
-## Example MCP Flow (JSON)
-1. Client connects and sends `initialize`:
-```json
-{"type":"initialize","client":"demo","version":"1.0"}
+### Project Structure
+
 ```
-2. Server replies with capabilities + session id.
-3. Client lists tools:
-```json
-{"type":"list_tools"}
-```
-4. Client calls add:
-```json
-{"type":"call_tool","name":"add","args":{"a":5,"b":7}}
-```
-5. Server responds:
-```json
-{"type":"tool_result","name":"add","result":12}
+mcp_calculator/
+├── mcp_server/
+│   ├── __init__.py
+│   └── server.py          # Main MCP server
+├── tests/
+│   └── test_server.py     # Unit tests
+├── pyproject.toml
+└── README.md
 ```
 
-## Best Practices (Summary)
-- Validate all inbound messages with schemas (Pydantic models here).
-- Keep protocol layer separate from business logic (`tools.py`).
-- Return structured errors with a consistent shape.
-- Use logging levels: INFO for flow, DEBUG for payloads (avoid secrets), WARNING/ERROR for issues.
-- Add timeouts & rate limiting (future enhancement) for production.
-- Consider versioning and compatibility in `initialize` handshake.
-- Write unit tests for pure logic (calculator) and integration tests for protocol.
+## Troubleshooting
 
+- Verify absolute path in `claude_desktop_config.json`
+- Ensure Python >= 3.10
+- Check Claude Desktop logs (Help → View Logs)
+
+## References
+
+- [Model Context Protocol](https://modelcontextprotocol.io/)
+- [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
+Requirements
+
+- Python >= 3.10
+- Official MCP SDK (`mcp>=1.0.0`
