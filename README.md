@@ -23,10 +23,6 @@ Model Context Protocol (MCP) is a structured, message-based protocol that lets A
  │   ├── protocol.py          # Pydantic models for MCP messages
  │   ├── tools.py             # Calculator tool implementations
  │   └── logging_config.py    # Logging setup
- ├── tests/
- │   └── test_tools.py        # Basic unit tests for calculator logic
- ├── scripts/
- │   └── run_dev.sh           # Helper script to run server
  └── client_example.py        # Minimal WebSocket client example
 ```
 
