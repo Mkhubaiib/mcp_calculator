@@ -75,7 +75,6 @@ mcp_calculator/
 
 ## Troubleshooting
 
-- Verify absolute path in `claude_desktop_config.json`
 - Ensure Python >= 3.10
 - Check Claude Desktop logs (Help → View Logs)
 
