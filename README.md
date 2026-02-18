@@ -73,16 +73,12 @@ mcp_calculator/
 └── README.md
 ```
 
-## Troubleshooting
+## Requirements
 
-- Ensure Python >= 3.10
-- Check Claude Desktop logs (Help → View Logs)
+- Python >= 3.10
+- Official MCP SDK (`mcp>=1.0.0`)
 
 ## References
 
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
-Requirements
-
-- Python >= 3.10
-- Official MCP SDK (`mcp>=1.0.0`
