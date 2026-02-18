@@ -20,7 +20,7 @@ dev = [
 ]
 
 [project.scripts]
-mcp-calculator = "mcp_server.server:main"
+mcp-calculator = "mcp_server.server:run"
 
 [tool.setuptools.packages.find]
 where = ["."]
