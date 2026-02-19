@@ -1,13 +1,14 @@
 # MCP Calculator Server
 
-A Model Context Protocol (MCP) server that provides calculator operations for MCP clients.
+A Model Context Protocol (MCP) server that provides calculator operations via **FastMCP**.
 
 ## Features
 
-- ✅ **Official MCP SDK** - Built with the official `mcp` Python package
-- ✅ **stdio Transport** - Standard MCP communication protocol
+- ✅ **FastMCP Framework** - Built with FastMCP for simplified MCP server development
+- ✅ **SSE Transport** - Server-Sent Events transport for MCP clients
+- ✅ **Container Ready** - Docker and docker-compose support for easy deployment
 - ✅ **4 Calculator Tools** - add, subtract, multiply, divide
-- ✅ **Type Safety** - Full input validation with JSON schemas
+- ✅ **Type Safety** - Automatic input validation with type hints
 - ✅ **Error Handling** - Graceful handling of edge cases (division by zero, invalid inputs)
 - ✅ **Well Tested** - Comprehensive test coverage with pytest
 
@@ -30,17 +31,33 @@ pip install -e ".[dev]"
 
 ### Running the Server
 
-Run the MCP server using either method:
-
 ```bash
-# Using the entry point command
-mcp-calculator
+# Development mode with auto-reload
+fastmcp run mcp_server/server.py:mcp --transport sse --port 8000 --reload
 
-# Or using Python module syntax
-python -m mcp_server.server
+# Production mode
+fastmcp run mcp_server/server.py:mcp --transport sse --port 8000
 ```
 
-The server communicates via stdio (stdin/stdout) using the MCP protocol.
+### Testing with MCP Inspector
+
+```bash
+# Interactive development mode with web UI
+fastmcp dev inspector mcp_server/server.py:mcp
+```
+
+This opens a web interface to test your tools interactively.
+
+### Using Docker
+
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Or build and run manually
+docker build -t mcp-calculator .
+docker run -p 8000:8000 mcp-calculator
+```
 
 ## Available Tools
 
@@ -51,24 +68,17 @@ The server communicates via stdio (stdin/stdout) using the MCP protocol.
 | `multiply` | Multiply two numbers | `a` (number), `b` (number) |
 | `divide` | Divide a by b | `a` (number), `b` (number, cannot be zero) |
 
-## Development
-
-### Running Tests
-
-```bash
-pip install -e ".[dev]"
-pytest
-```
-
 ### Project Structure
 
 ```
 mcp_calculator/
 ├── mcp_server/
 │   ├── __init__.py
-│   └── server.py          # Main MCP server
+│   └── server.py          # FastMCP server implementation
 ├── tests/
 │   └── test_server.py     # Unit tests
+├── Dockerfile             # Container image definition
+├── docker-compose.yml     # Multi-container orchestration
 ├── pyproject.toml
 └── README.md
 ```
@@ -76,7 +86,16 @@ mcp_calculator/
 ## Requirements
 
 - Python >= 3.10
-- Official MCP SDK (`mcp>=1.0.0`)
+- FastMCP (`fastmcp>=3.0.0`)
+- Uvicorn for HTTP server (`uvicorn[standard]>=0.35.0`)
+
+## Docker Deployment
+
+The server is designed for containerized deployment:
+
+1. **Build**: `docker build -t mcp-calculator .`
+2. **Run**: `docker run -p 8000:8000 mcp-calculator`
+3. **Access**: `http://localhost:8000`
 
 ## References
 
