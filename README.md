@@ -10,7 +10,6 @@ A Model Context Protocol (MCP) server that provides calculator operations via **
 - ✅ **4 Calculator Tools** - add, subtract, multiply, divide
 - ✅ **Type Safety** - Automatic input validation with type hints
 - ✅ **Error Handling** - Graceful handling of edge cases (division by zero, invalid inputs)
-- ✅ **Well Tested** - Comprehensive test coverage with pytest
 
 ## Installation
 
@@ -75,8 +74,6 @@ mcp_calculator/
 ├── mcp_server/
 │   ├── __init__.py
 │   └── server.py          # FastMCP server implementation
-├── tests/
-│   └── test_server.py     # Unit tests
 ├── Dockerfile             # Container image definition
 ├── docker-compose.yml     # Multi-container orchestration
 ├── pyproject.toml
